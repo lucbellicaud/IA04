@@ -27,7 +27,7 @@ func GetAgent(id AgentID, pool []Agent) (Agent, error) {
 			return v, nil
 		}
 	}
-	return nil, errors.New("Agent %s not found" + string(id))
+	return Agent{}, errors.New("Agent %s not found" + string(id))
 }
 
 func (ag Agent) Rank(ag1 Agent) (int, error) {
@@ -50,7 +50,7 @@ func (ag Agent) Prefers(ag1 Agent, ag2 Agent) (bool, error) {
 	if err2 != nil {
 		return false, errors.New("Agent %s not found" + string(ag2.ID))
 	}
-	return rank1 < rank2, nil
+	return rank1 > rank2, nil
 
 }
 

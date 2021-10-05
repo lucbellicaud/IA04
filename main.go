@@ -18,15 +18,20 @@ func main() {
 		"Sylvain",
 		"Emmanuel",
 		"Bob",
+		"Michel",
+		"Bernard",
 	}
 	Bnames := [...]string{
 		"Nathalie",
 		"Annaïck",
 		"Brigitte",
+		"Le 4ème",
+		"le 5",
+		"le 6",
 	}
 
-	poolA := make([]Agent, 0, len(Anames))
-	poolB := make([]Agent, 0, len(Bnames))
+	Elèves := make([]Agent, 0, len(Anames))
+	Universités := make([]Agent, 0, len(Bnames))
 
 	groupA_prefix := "a"
 	groupB_prefix := "b"
@@ -44,21 +49,23 @@ func main() {
 	for i := 0; i < len(Anames); i++ {
 		prefs := RandomPrefs(prefsB)
 		a := Agent{prefsA[i], Anames[i], prefs}
-		poolA = append(poolA, a)
+		Elèves = append(Elèves, a)
 	}
 
 	for i := 0; i < len(Bnames); i++ {
 		prefs := RandomPrefs(prefsA)
 		b := Agent{prefsB[i], Bnames[i], prefs}
-		poolB = append(poolB, b)
+		Universités = append(Universités, b)
 	}
 
-	for _, a := range poolA {
+	for _, a := range Elèves {
 		fmt.Println(a)
 	}
 
-	for _, b := range poolB {
+	for _, b := range Universités {
 		fmt.Println(b)
 	}
+
+	fmt.Println(AlgoAI(Elèves, Universités))
 
 }
