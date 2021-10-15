@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func PrintAg(ag Agent) {
@@ -30,8 +31,8 @@ func main() {
 		"le 6",
 	}
 
-	Elèves := make([]Agent, 0, len(Anames))
-	Universités := make([]Agent, 0, len(Bnames))
+	Elèves := make([]AgentProposant, 0, len(Anames))
+	Universités := make([]AgentDisposant, 0, len(Bnames))
 
 	groupA_prefix := "a"
 	groupB_prefix := "b"
@@ -46,26 +47,48 @@ func main() {
 		prefsB[i] = AgentID(groupB_prefix + fmt.Sprintf("%d", i))
 	}
 
-	for i := 0; i < len(Anames); i++ {
-		prefs := RandomPrefs(prefsB)
-		a := Agent{prefsA[i], Anames[i], prefs}
-		Elèves = append(Elèves, a)
-	}
+	// for i := 0; i < len(Anames); i++ {
+	// 	prefs := RandomPrefs(prefsB)
+	// 	a := Agent{prefsA[i], Anames[i], prefs}
+	// 	Elèves = append(Elèves, a)
+	// }
+
+	// for i := 0; i < len(Bnames); i++ {
+	// 	prefs := RandomPrefs(prefsA)
+	// 	b := Agent{prefsB[i], Bnames[i], prefs}
+	// 	Universités = append(Universités, b)
+	// }
+
+	c := make(chan Request)
 
 	for i := 0; i < len(Bnames); i++ {
 		prefs := RandomPrefs(prefsA)
-		b := Agent{prefsB[i], Bnames[i], prefs}
+		b := NewAgentDisposant(prefsB[i], Bnames[i], prefs,c)
+		b.Start()
 		Universités = append(Universités, b)
 	}
 
-	for _, a := range Elèves {
-		fmt.Println(a)
+	for i := 0; i < len(Anames); i++ {
+		prefs := RandomPrefs(prefsB)
+		a := NewAgentProposant(prefsA[i], Anames[i], prefs, c)
+		a.Start()
+		Elèves = append(Elèves, a)
 	}
 
-	for _, b := range Universités {
-		fmt.Println(b)
-	}
+	time.Sleep(time.Minute)
 
-	fmt.Println(AlgoAI(Elèves, Universités))
+	
+
+	// for _, a := range Elèves {
+	// 	fmt.Println(a)
+	// }
+
+	// for _, b := range Universités {
+	// 	fmt.Println(b)
+	// }
+
+	// fmt.Println(AlgoAD(Elèves, Universités))
+
+    
 
 }

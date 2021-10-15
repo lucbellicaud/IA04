@@ -2,82 +2,72 @@ package main
 
 import "fmt"
 
-func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
+func AlgoAD(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	//Algorithme de tour par tour. Chaque tour, les élèves donnent leur choix préféré, et les universités prennent leur préféré.
 	res := make(map[AgentID]AgentID, len(Elèves))
-	for round := 0; len(Universités) != 0; round++ { //Boucle tour par tour
-		fmt.Println("Tour : ", round+1)
-		new := retournerChoix(Elèves, Universités, round, res)
-		fmt.Println("Nouvelles affectations du tour", new)
-		for uni, eleve := range new {
-			res[uni] = eleve
-			Elèves = Supprimer(Elèves, Find(Elèves, eleve))
-			Universités = Supprimer(Universités, Find(Universités, uni))
-		}
+	done := false
+
+	for round := 0; done == false; round++ { //Boucle tour par tour
+		res, done, Elèves, Universités = tourAD(Elèves, Universités, res)
 		fmt.Println("Liste à jour sur le tour ", round, " ", res)
+		fmt.Println(done)
 	}
 
 	return res
 }
 
-func retournerChoix(Elèves []Agent, Universités []Agent, round int, res map[AgentID]AgentID) map[AgentID]AgentID {
-	//Cette fonction retourne une map avec les choix validés à chaque tour
+func tourAD(Elèves []Agent, Universités []Agent, res map[AgentID]AgentID) (map[AgentID]AgentID, bool, []Agent, []Agent) {
+	done := true
 	choixEleves := make(map[AgentID][]AgentID)
 
 	//Prend les choix préférés des élèves à ce tour
 	for _, eleve := range Elèves {
-		prefUni := ReturnFirst(eleve.Prefs, Universités, round)
+		prefUni := eleve.Prefs[0]
 		choixEleves[prefUni] = append(choixEleves[prefUni], eleve.ID)
 	}
-
-	fmt.Println("Choix des élèves : ", choixEleves)
-	choixUni := make(map[AgentID]AgentID)
+	fmt.Println("Choix des élèves", choixEleves)
 
 	for uni, eleves := range choixEleves { // L'université prend son élève préféré
-		choixUni[uni] = eleves[0]
-		if len(eleves) >= 2 {
-			for _, eleve := range eleves[1:] {
+		for _, eleve := range eleves {
+			_, ok := res[uni]
+			if !ok {
+				res[uni] = eleve
+			} else {
 				ag, _ := GetAgent(uni, Universités)
-				oldeleve, _ := GetAgent(eleve, Elèves)
-				neweleve, _ := GetAgent(choixUni[uni], Elèves)
-				fmt.Println("Comparaison de ", oldeleve, " avec ", neweleve)
-				pref, _ := ag.Prefers(neweleve, oldeleve)
-				if pref {
-					fmt.Println("Remplacement de ", oldeleve, " par ", neweleve)
-					choixUni[uni] = eleve
+				neweleve, _ := GetAgent(eleve, Elèves)
+				oldeleve, _ := GetAgent(res[uni], Elèves)
+				if !Equal(neweleve, oldeleve) {
+					done = false
+					fmt.Println("Comparaison de ", oldeleve, " avec ", neweleve)
+					pref, _ := ag.Prefers(neweleve, oldeleve)
+					if pref {
+						Elèves = SupprimerEleve(Elèves, oldeleve)
+						fmt.Println("Remplacement de ", oldeleve, " par ", neweleve)
+						res[uni] = eleve
+					} else {
+						Elèves = SupprimerEleve(Elèves, neweleve)
+						fmt.Println("Pas de remplacement de ", oldeleve, " par ", neweleve)
+					}
 				}
+
 			}
+
 		}
 	}
-
-	return choixUni
+	fmt.Println(Elèves)
+	return res, done, Elèves, Universités
 }
 
-func ReturnFirst(prefListe []AgentID, Universités []Agent, round int) (uni AgentID) {
-	//Cette fonction retourne le premier choix qui n'est pas déjà pris.
-	for i := round; i <= len(prefListe[round]); round++ {
-		for _, uni := range Universités {
-			if uni.ID == prefListe[round] {
-				return uni.ID
-			}
-		}
-
-	}
-	return AgentID("")
-}
-
-func Find(a []Agent, x AgentID) int {
-	for i, n := range a {
-		if x == n.ID {
-			return i
+func SupprimerEleve(pool []Agent, ag Agent) []Agent {
+	//fmt.Println("Avant", pool)
+	j := -1
+	for i, v := range pool {
+		if Equal(v, ag) {
+			j = i
+			break
 		}
 	}
-	return len(a)
-}
+	pool[j].Prefs = pool[j].Prefs[1:]
+	return pool
 
-func Supprimer(a []Agent, i int) []Agent {
-	if i == len(a) {
-		return a[:i]
-	}
-	return append(a[:i], a[i+1:]...)
 }

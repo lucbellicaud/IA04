@@ -7,7 +7,7 @@ func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	res := make(map[AgentID]AgentID, len(Elèves))
 	for round := 0; len(Universités) != 0; round++ { //Boucle tour par tour
 		fmt.Println("Tour : ", round+1)
-		new := tourAI(Elèves, Universités, round, res)
+		new := tourAI(Elèves, Universités, round)
 		fmt.Println("Nouvelles affectations du tour", new)
 		for uni, eleve := range new {
 			res[uni] = eleve
@@ -20,13 +20,13 @@ func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	return res
 }
 
-func tourAI(Elèves []Agent, Universités []Agent, round int, res map[AgentID]AgentID) map[AgentID]AgentID {
+func tourAI(Elèves []Agent, Universités []Agent, round int) map[AgentID]AgentID {
 	//Cette fonction retourne une map avec les choix validés à chaque tour
 	choixEleves := make(map[AgentID][]AgentID)
 
 	//Prend les choix préférés des élèves à ce tour
 	for _, eleve := range Elèves {
-		prefUni := RetournerFavori(eleve.Prefs, Universités, round)
+		prefUni := RetournerFavoriSelonTour(eleve.Prefs, Universités, round)
 		choixEleves[prefUni] = append(choixEleves[prefUni], eleve.ID)
 	}
 
@@ -38,8 +38,8 @@ func tourAI(Elèves []Agent, Universités []Agent, round int, res map[AgentID]Ag
 		if len(eleves) >= 2 {
 			for _, eleve := range eleves[1:] {
 				ag, _ := GetAgent(uni, Universités)
-				oldeleve, _ := GetAgent(eleve, Elèves)
-				neweleve, _ := GetAgent(choixUni[uni], Elèves)
+				neweleve, _ := GetAgent(eleve, Elèves)
+				oldeleve, _ := GetAgent(choixUni[uni], Elèves)
 				fmt.Println("Comparaison de ", oldeleve, " avec ", neweleve)
 				pref, _ := ag.Prefers(neweleve, oldeleve)
 				if pref {
@@ -53,7 +53,7 @@ func tourAI(Elèves []Agent, Universités []Agent, round int, res map[AgentID]Ag
 	return choixUni
 }
 
-func RetournerFavori(prefListe []AgentID, Universités []Agent, round int) (uni AgentID) {
+func RetournerFavoriSelonTour(prefListe []AgentID, Universités []Agent, round int) (uni AgentID) {
 	//Cette fonction retourne le premier choix qui n'est pas déjà pris.
 	for i := round; i <= len(prefListe[round]); round++ {
 		for _, uni := range Universités {
@@ -73,6 +73,15 @@ func Trouver(a []Agent, x AgentID) int {
 		}
 	}
 	return len(a)
+}
+
+func Trouver_ID(eleve AgentID, liste_eleves []AgentID) int {
+	for i, val := range liste_eleves {
+		if val == eleve {
+			return i
+		}
+	}
+	return len(liste_eleves)
 }
 
 func Supprimer(a []Agent, i int) []Agent {
