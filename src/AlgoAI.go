@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	//Algorithme de tour par tour. Chaque tour, les élèves donnent leur choix préféré, et les universités prennent leur préféré.
@@ -11,8 +14,8 @@ func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 		fmt.Println("Nouvelles affectations du tour", new)
 		for uni, eleve := range new {
 			res[uni] = eleve
-			Elèves = Supprimer(Elèves, Trouver(Elèves, eleve))
-			Universités = Supprimer(Universités, Trouver(Universités, uni))
+			Elèves = Remove(Elèves, Trouver(Elèves, eleve))
+			Universités = Remove(Universités, Trouver(Universités, uni))
 		}
 		fmt.Println("Liste à jour sur le tour ", round, " ", res)
 	}
@@ -61,32 +64,23 @@ func RetournerFavoriSelonTour(prefListe []AgentID, Universités []Agent, round i
 				return uni.ID
 			}
 		}
-
 	}
 	return AgentID("")
 }
 
-func Trouver(a []Agent, x AgentID) int {
-	for i, n := range a {
-		if x == n.ID {
-			return i
+
+
+func GetUniChoices(choixEleves map[AgentID][]AgentID, Elèves []Agent, Universités []Agent) map[AgentID]AgentID{
+	choixUnis := make(map[AgentID]AgentID)
+	for _,uni := range Universités {
+		_, exists := choixEleves[uni.ID]
+		if exists {
+			eleve,err1 := ReturnFavorite(choixEleves[uni.ID],uni)
+			if err1!=nil{
+				log.Fatal(err1)
+			}
+			choixUnis[uni.ID] = eleve
 		}
 	}
-	return len(a)
-}
-
-func Trouver_ID(eleve AgentID, liste_eleves []AgentID) int {
-	for i, val := range liste_eleves {
-		if val == eleve {
-			return i
-		}
-	}
-	return len(liste_eleves)
-}
-
-func Supprimer(a []Agent, i int) []Agent {
-	if i == len(a) {
-		return a[:i]
-	}
-	return append(a[:i], a[i+1:]...)
+	return choixUnis
 }

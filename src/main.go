@@ -20,6 +20,16 @@ func main() {
 		"Bob",
 		"Michel",
 		"Bernard",
+		"Jean-Claude",
+		"Jean-René",
+		"L'abbé Pierre",
+		"Luc",
+		"Nathan",
+		"Pierre",
+		"Paul",
+		"Jacques",
+		"René",
+		"Albert",
 	}
 	Bnames := [...]string{
 		"Nathalie",
@@ -28,6 +38,16 @@ func main() {
 		"Le 4ème",
 		"le 5",
 		"le 6",
+		"Uni 7",
+		"UTC",
+		"X",
+		"Les mines",
+		"INSA LYON",
+		"INSA TOULOUSE",
+		"INSA STR",
+		"INSA CVL",
+		"UTT",
+		"UTBM",
 	}
 
 	Elèves := make([]Agent, 0, len(Anames))
@@ -86,8 +106,6 @@ func main() {
 		fmt.Println(b)
 	}
 
-	fmt.Println(AlgoAD(Elèves, Universités))
-
-    
+	fmt.Println(TTC(Elèves, Universités))
 
 }
