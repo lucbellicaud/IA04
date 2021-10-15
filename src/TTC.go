@@ -1,8 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
 
 func TTC(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	res := make(map[AgentID]AgentID, len(Elèves))
@@ -16,15 +13,14 @@ func TTC(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 
 func GetChoicesTTC(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	choix := make(map[AgentID]AgentID)
-	for _, eleve := range Elèves {
-		UniPref := eleve.Prefs[0]
-		choix[eleve.ID] = UniPref
+	for _, élève := range Elèves {
+		UniPref := élève.Prefs[0]
+		choix[élève.ID] = UniPref
 	}
 	for _, uni := range Universités {
 		ElevePref := uni.Prefs[0]
 		choix[uni.ID] = ElevePref
 	}
-	fmt.Println(choix)
 	return choix
 }
 
@@ -40,15 +36,15 @@ func TortoiseAndHare(graph map[AgentID]AgentID, Elèves []Agent, Universités []
 
 	to_remove := make(map[AgentID]AgentID)
 	to_remove[tortoise] = graph[tortoise]
-	eleve := graph[graph[tortoise]]
-	uni := graph[eleve]
+	élève := graph[graph[tortoise]]
+	uni := graph[élève]
 
-	for eleve != tortoise {
-		to_remove[eleve] = uni
-		eleve = graph[uni]
-		uni = graph[eleve]
+	for élève != tortoise {
+		to_remove[élève] = uni
+		élève = graph[uni]
+		uni = graph[élève]
 	}
-	fmt.Println("To remove",to_remove)
+
 	Elèves, Universités = RemoveTuples(to_remove, Elèves, Universités)
 	res = MergeAgentIDMaps(res, to_remove)
 
