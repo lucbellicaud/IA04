@@ -90,8 +90,18 @@ func Remove(s []Agent, i int) []Agent {
     return s[:len(s)-1]
 }
 
-func OrderedRemove(slice []AgentID, s int) []AgentID {
-	return append(slice[:s], slice[s+1:]...)
+func OrderedRemove(slice []AgentID, i int) []AgentID {
+	ret := make([]AgentID, len(slice)-1)
+	j:=0
+	for j<i {
+		ret[j]=slice[j]
+		j++
+	}
+	for j<len(slice)-1 {
+		ret[j]=slice[j+1]
+		j++
+	}
+	return ret
 }
 
 func MergeAgentIDMaps(a map[AgentID]AgentID, b map[AgentID]AgentID) map[AgentID]AgentID {

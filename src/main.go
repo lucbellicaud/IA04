@@ -12,7 +12,7 @@ func PrintInt(i int) {
 	fmt.Println(i)
 }
 
-type algoCouplage func([]Agent,[]Agent) map[AgentID]AgentID
+type algoCouplage func([]Agent, []Agent) map[AgentID]AgentID
 type listeAlgos []algoCouplage
 
 func main() {
@@ -54,7 +54,7 @@ func main() {
 		"UTBM",
 	}
 
-	Elèves2 := make([]Agent, 0, len(Anames))
+	Elèves := make([]Agent, 0, len(Anames))
 	Universités := make([]Agent, 0, len(Bnames))
 
 	groupA_prefix := "a"
@@ -73,7 +73,7 @@ func main() {
 	for i := 0; i < len(Anames); i++ {
 		prefs := RandomPrefs(prefsB)
 		a := Agent{prefsA[i], Anames[i], prefs}
-		Elèves2 = append(Elèves2, a)
+		Elèves = append(Elèves, a)
 	}
 
 	for i := 0; i < len(Bnames); i++ {
@@ -82,7 +82,7 @@ func main() {
 		Universités = append(Universités, b)
 	}
 
-	for _, a := range Elèves2 {
+	for _, a := range Elèves {
 		fmt.Println(a)
 	}
 
@@ -90,30 +90,28 @@ func main() {
 		fmt.Println(b)
 	}
 
-	listeFonctions := make(listeAlgos,3)
+	listeFonctions := make(listeAlgos, 3)
 	listeFonctions[0] = AlgoAD
 	listeFonctions[1] = AlgoAI
 	listeFonctions[2] = TTC
 
-	var unis []Agent
-	var élèves []Agent
-	
-	for i,fun :=range listeFonctions{
-		unis = make([]Agent, len(Universités))
-		élèves = make([]Agent, len(Elèves2))
+	for i, fun := range listeFonctions {
+		unis := make([]Agent, len(Anames))
+		élèves := make([]Agent, len(Bnames))
 
-		copy(unis,Universités)
-		copy(élèves,Elèves2)
-
-		fmt.Printf("Copie %p Référence %p", &élèves,&Elèves2)
-		
-		fmt.Println(Universités[0])
-		fmt.Println(Elèves2[0])
+		copy(unis, Universités)
+		copy(élèves, Elèves)
 
 		fmt.Println(i)
-		fmt.Println(fun(élèves, unis))
+		res := fun(élèves, unis)
+		fmt.Println(res)
+
+		copy(unis, Universités)
+		copy(élèves, Elèves)
+
+		fmt.Println(DynamiqueLibre(élèves, unis, res))
+
 	}
-	
 
 }
 
@@ -131,7 +129,7 @@ func main() {
 // 	prefs := RandomPrefs(prefsB)
 // 	a := NewAgentProposant(prefsA[i], Anames[i], prefs, c)
 // 	a.Start()
-// 	Elèves2 = append(Elèves2, a)
+// 	Elèves = append(Elèves, a)
 // }
 
 // time.Sleep(time.Minute)
