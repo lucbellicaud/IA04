@@ -12,8 +12,8 @@ func DynamiqueLibre(Elèves []Agent, Universités []Agent, res map[AgentID]Agent
 		for _,université := range Universités {	
 			if élève.PrefersWithID(université.ID, res[élève.ID]) && université.PrefersWithID(élève.ID,reverseRes[université.ID]) {
 				// fmt.Println("Couple instable :",élève.ID, res[élève.ID])
-				// fmt.Println("Elève ",élève.ID, " préfère ", université.ID, " à", res[élève.ID])
-				// fmt.Println("Université ",université.ID," préfère ",élève.ID, " à", reverseRes[université.ID])
+				fmt.Println("Elève ",élève.ID, " préfère ", université.ID, " à", res[élève.ID])
+				fmt.Println("Université ",université.ID," préfère ",élève.ID, " à", reverseRes[université.ID])
 				res[reverseRes[université.ID]]=res[élève.ID]
 				reverseRes[res[élève.ID]]=reverseRes[université.ID]
 				res[élève.ID]=université.ID
