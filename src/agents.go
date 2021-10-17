@@ -140,3 +140,11 @@ func DicoChoixUnis(choixElèves map[AgentID][]AgentID, Universités []Agent) map
 	}
 	return choixUnis
 }
+
+func reverseMap(m map[AgentID]AgentID) map[AgentID]AgentID {
+    n := make(map[AgentID]AgentID, len(m))
+    for k, v := range m {
+        n[v] = k
+    }
+    return n
+}

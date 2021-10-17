@@ -105,11 +105,14 @@ func main() {
 		fmt.Println(i)
 		res := fun(élèves, unis)
 		fmt.Println(res)
+		Score(Elèves,Universités,res)
 
 		copy(unis, Universités)
 		copy(élèves, Elèves)
 
 		fmt.Println(DynamiqueLibre(élèves, unis, res))
+
+		
 
 	}
 

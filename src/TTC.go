@@ -1,5 +1,6 @@
 package main
 
+// import "fmt"
 
 func TTC(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 	res := make(map[AgentID]AgentID, len(Elèves))
@@ -27,12 +28,21 @@ func GetChoicesTTC(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
 func TortoiseAndHare(graph map[AgentID]AgentID, Elèves []Agent, Universités []Agent, res map[AgentID]AgentID) ([]Agent, []Agent, map[AgentID]AgentID) {
 	tortoise := graph[Elèves[0].ID]
 	hare := graph[graph[Elèves[0].ID]]
-		
 
 	for hare != tortoise { //Cherche un cycle
 		tortoise = graph[tortoise]
 		hare = graph[graph[hare]]
 	}
+	// fmt.Println("cycle :", hare)
+	// fmt.Println(graph)
+
+	temp:=graph[hare]
+	
+	for temp!=hare{
+		// fmt.Print(temp,",")
+		temp=graph[temp]
+	}
+	// fmt.Println("\n",hare)
 
 	to_remove := make(map[AgentID]AgentID)
 	to_remove[tortoise] = graph[tortoise]
@@ -50,5 +60,3 @@ func TortoiseAndHare(graph map[AgentID]AgentID, Elèves []Agent, Universités []
 
 	return Elèves, Universités, res
 }
-
-
