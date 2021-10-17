@@ -1,21 +1,24 @@
 package main
 
+import "fmt"
+
 func AlgoAD(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
+	fmt.Println("Début de l'ago AD")
 	res := make(map[AgentID]AgentID, len(Elèves))
-	round := 0
 	change := true
 	for change {
-		Elèves, Universités, res, change = tourAD(Elèves, Universités, res, round)
+		Elèves, Universités, res, change = tourAD(Elèves, Universités, res)
 	}
+	fmt.Print("Fin de l'ago AD\n\n")
 	return res
 }
 
-func tourAD(Elèves []Agent, Universités []Agent, res map[AgentID]AgentID, round int) ([]Agent, []Agent, map[AgentID]AgentID, bool) {
+func tourAD(Elèves []Agent, Universités []Agent, res map[AgentID]AgentID) ([]Agent, []Agent, map[AgentID]AgentID, bool) {
 	var change bool
 	choixElèves := DicoChoixElèves(Elèves)
 	choixUni := DicoChoixUnis(choixElèves, Universités)
 	Elèves, change = SupprimerNonAcceptés(Elèves, choixElèves, choixUni)
-	MergeAgentIDMaps(res, choixUni)
+	ConcaténerAgentIDDic(res, choixUni)
 	return Elèves, Universités, res, change
 }
 

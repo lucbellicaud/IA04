@@ -19,10 +19,6 @@ func NewAgent(id AgentID, name string, prefs []AgentID) Agent {
 	return Agent{id, name, prefs}
 }
 
-func Equal(ag1 Agent, ag2 Agent) bool {
-	return ag1.ID == ag2.ID
-}
-
 func (ag Agent) RankWithID(agID1 AgentID) (int, error) {
 	for i, v := range ag.Prefs {
 		if v == agID1 {
@@ -55,7 +51,7 @@ func RandomPrefs(ids []AgentID) (res []AgentID) {
 	return
 }
 
-func ReturnFavorite(listeElèves []AgentID,Université Agent) (AgentID,error){
+func RetournerFavori(listeElèves []AgentID,Université Agent) (AgentID,error){
 	favorite := listeElèves[0]
 	for _,élève := range listeElèves {
 		if  Université.PrefersWithID(élève,favorite) {
@@ -85,12 +81,12 @@ func Trouver_ID(élève AgentID, liste_élèves []AgentID) int {
 	return len(liste_élèves)
 }
 
-func Remove(s []Agent, i int) []Agent {
+func Supprimer(s []Agent, i int) []Agent {
     s[i] = s[len(s)-1]
     return s[:len(s)-1]
 }
 
-func OrderedRemove(slice []AgentID, i int) []AgentID {
+func SupprimerOrdonné(slice []AgentID, i int) []AgentID {
 	ret := make([]AgentID, len(slice)-1)
 	j:=0
 	for j<i {
@@ -104,22 +100,22 @@ func OrderedRemove(slice []AgentID, i int) []AgentID {
 	return ret
 }
 
-func MergeAgentIDMaps(a map[AgentID]AgentID, b map[AgentID]AgentID) map[AgentID]AgentID {
+func ConcaténerAgentIDDic(a map[AgentID]AgentID, b map[AgentID]AgentID) map[AgentID]AgentID {
 	for k, v := range b {
 		a[k] = v
 	}
 	return a
 }
 
-func RemoveTuples(to_remove map[AgentID]AgentID, Elèves []Agent, Universités []Agent) ([]Agent, []Agent) {
+func SupprimerTuples(to_remove map[AgentID]AgentID, Elèves []Agent, Universités []Agent) ([]Agent, []Agent) {
 	for élève, uni := range to_remove {
-		Elèves = Remove(Elèves, Trouver(Elèves, élève))
+		Elèves = Supprimer(Elèves, Trouver(Elèves, élève))
 		for i,v := range Elèves{
-			Elèves[i].Prefs = OrderedRemove(v.Prefs, Trouver_ID(uni,v.Prefs))
+			Elèves[i].Prefs = SupprimerOrdonné(v.Prefs, Trouver_ID(uni,v.Prefs))
 		}
-		Universités = Remove(Universités, Trouver(Universités, uni))
+		Universités = Supprimer(Universités, Trouver(Universités, uni))
 		for i,v := range Universités{
-			Universités[i].Prefs = OrderedRemove(v.Prefs, Trouver_ID(élève,v.Prefs))
+			Universités[i].Prefs = SupprimerOrdonné(v.Prefs, Trouver_ID(élève,v.Prefs))
 		}
 
 	}
@@ -131,7 +127,7 @@ func DicoChoixUnis(choixElèves map[AgentID][]AgentID, Universités []Agent) map
 	for _,uni := range Universités {
 		_, exists := choixElèves[uni.ID]
 		if exists {
-			élève,err1 := ReturnFavorite(choixElèves[uni.ID],uni)
+			élève,err1 := RetournerFavori(choixElèves[uni.ID],uni)
 			if err1!=nil{
 				log.Fatal(err1)
 			}
@@ -141,7 +137,7 @@ func DicoChoixUnis(choixElèves map[AgentID][]AgentID, Universités []Agent) map
 	return choixUnis
 }
 
-func reverseMap(m map[AgentID]AgentID) map[AgentID]AgentID {
+func InverserDic(m map[AgentID]AgentID) map[AgentID]AgentID {
     n := make(map[AgentID]AgentID, len(m))
     for k, v := range m {
         n[v] = k

@@ -95,21 +95,20 @@ func main() {
 	listeFonctions[1] = AlgoAI
 	listeFonctions[2] = TTC
 
-	for i, fun := range listeFonctions {
+	for _, fun := range listeFonctions {
 		unis := make([]Agent, len(Anames))
 		élèves := make([]Agent, len(Bnames))
 
 		copy(unis, Universités)
 		copy(élèves, Elèves)
 
-		fmt.Println(i)
 		res := fun(élèves, unis)
 		fmt.Println(res)
 		Score(Elèves,Universités,res)
 
 		copy(unis, Universités)
 		copy(élèves, Elèves)
-
+		
 		fmt.Println(DynamiqueLibre(élèves, unis, res))
 
 		

@@ -1,20 +1,22 @@
 package main
 
-
+import "fmt"
 
 func AlgoAI(Elèves []Agent, Universités []Agent) map[AgentID]AgentID {
+	fmt.Println("Début de l'ago AI")
 	res := make(map[AgentID]AgentID, len(Elèves))
 	for len(Elèves) != 0 {
 		Elèves, Universités, res = tourAI(Elèves, Universités, res)
 	}
+	fmt.Print("Fin de l'ago AI\n\n")
 	return res
 }
 
 func tourAI(Elèves []Agent, Universités []Agent, res map[AgentID]AgentID) ([]Agent, []Agent, map[AgentID]AgentID) {
 	choixElèves := DicoChoixElèves(Elèves)
 	choixUni := DicoChoixUnis(choixElèves, Universités)
-	Elèves, Universités = RemoveTuples(choixUni, Elèves, Universités)
-	MergeAgentIDMaps(res, choixUni)
+	Elèves, Universités = SupprimerTuples(choixUni, Elèves, Universités)
+	ConcaténerAgentIDDic(res, choixUni)
 	return Elèves, Universités, res
 }
 
